@@ -1,0 +1,47 @@
+name: prabhatpipeline
+
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: saurabhpool
+
+stages:
+  - stage: buildstage
+    displayName: Build Stage
+
+    jobs:
+      - job: buildjob
+        displayName: Build Job
+
+        steps:
+          - task: TerraformInstaller@1
+            inputs:
+              terraformVersion: 'latest'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'init'
+              backendServiceArm: 'prabhatserviceconnection'
+              backendAzureRmOverrideSubscriptionID: 'fc890557-6a78-4e91-9eac-5aff85b5fc09'
+              backendAzureRmResourceGroupName: 'rg1'
+              backendAzureRmStorageAccountName: 'stgprabhat123'
+              backendAzureRmContainerName: 'prabhattfstate'
+              backendAzureRmKey: 'terraform.tfstate'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'plan'
+              environmentServiceNameAzureRM: 'prabhatserviceconnection'
+              environmentAzureRmOverrideSubscriptionID: 'fc890557-6a78-4e91-9eac-5aff85b5fc09'
+
+          - task: TerraformTask@5
+            inputs:
+              provider: 'azurerm'
+              command: 'apply'
+              environmentServiceNameAzureRM: 'prabhatserviceconnection'
+              environmentAzureRmOverrideSubscriptionID: 'fc890557-6a78-4e91-9eac-5aff85b5fc09'
