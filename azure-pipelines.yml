@@ -6,7 +6,7 @@ trigger:
       - main
 
 pool:
-  name: agentpool1
+  name: prabhatpool
 
 stages:
   - stage: buildstage
